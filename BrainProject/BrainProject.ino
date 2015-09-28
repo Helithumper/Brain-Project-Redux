@@ -13,7 +13,7 @@
 #define dataPin 11
 #define clockPin 12
 
-#define debugLED 13
+#define debugLED 5
 
 
 
@@ -41,6 +41,8 @@ void setup() {
   pinMode(rgbBlue,OUTPUT);
 
   pinMode(button,INPUT);
+
+  digitalWrite(debugLED,HIGH); //Raise the Debug LED
 
   Serial.begin(9600);
 
@@ -86,17 +88,14 @@ void move(){
     newColor = 0;
   }
   
-  clear();//clear the shifter
+  shifter.clear();//clear the shifter
   shifter.write(); //write the clear of the shifter
   
   for(int i = 0; i < 12; i++){
     shifter.setPin(i,(colors[i]!=0)?1:0); //turn pins on or off based on the value at i in the array not being a 0
   }
   shifter.write(); //Write to the shifter pins
-  
-  digitalWrite(debugLED,HIGH); //Raise the Debug LED
-  //delay(150);
-  digitalWrite(debugLED,LOW); // Lower the Debug LED
+ 
   
   for(int i = 0; i< 12;i++){ //Serially print the colors to 9600
     Serial.print(colors[i]);
@@ -115,7 +114,6 @@ void clear(){
   shifter.write();
 }
 
-
 void loop() {
   //Check if any of the buttons were pressed and if so, queue the color and print the color to Serial 9600 Baud
   if(digitalRead(button)){
@@ -126,6 +124,6 @@ void loop() {
   if(initPressNum==1 && initPress==false){
     queueColor(1);
   }
-  delay(150);
+  delay(250);
   move(); //Move the entire thing
 }
